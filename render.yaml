@@ -1,8 +1,7 @@
-# Paid services: review current Render prices before creating this Blueprint.
+# Free prototype: the web service sleeps when idle; PostgreSQL expires after 30 days.
 databases:
   - name: application-tracker-db
-    plan: 0.1c-256mb
-    diskSizeGB: 1
+    plan: free
     ipAllowList: []
     databaseName: application_tracker
     user: application_tracker
@@ -10,9 +9,8 @@ services:
   - type: web
     name: application-tracker
     runtime: python
-    plan: 0.5c-512mb
+    plan: free
     buildCommand: ./build.sh
-    preDeployCommand: python manage.py migrate --noinput
     startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: DATABASE_URL
