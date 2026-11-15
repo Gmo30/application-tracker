@@ -46,16 +46,16 @@ Local SQLite records live in db.sqlite3. Keep that file if you want to retain lo
 
 ## Publish to Render
 
-The included render.yaml creates a Python web service and a PostgreSQL database. It selects PAID compute plans for a persistent pilot; review current charges in Render before creating resources. No resources have been created or charged by this project.
+The included render.yaml creates a Python web service and a PostgreSQL database. It selects FREE compute plans for a temporary prototype. The web service sleeps after 15 minutes without traffic and can take about a minute to wake. The 1 GB PostgreSQL database expires 30 days after creation, has no backups, and is deleted after a further 14-day grace period unless upgraded. Export important data before expiration.
 
 1. Create a GitHub repository and upload the contents of this folder at the repository root, including render.yaml and build.sh. Do not upload .env files, db.sqlite3, virtual environments, or secrets.
 2. Connect the repository to Render and create a new Blueprint from render.yaml.
 3. Review the service/database configuration and displayed costs before deploying. Rename both resource names and the database reference together if they conflict with existing resources.
-4. Render installs the requirements and collects CSS/static assets during the build. Its pre-deploy command applies database migrations.
+4. Render installs the requirements, collects CSS/static assets, and applies database migrations during the build. The free web service does not support a separate pre-deploy command.
 5. The configuration generates a secret key, connects the database internally, and turns debug off. Render's external hostname is added to Django's allowed hosts automatically.
 6. When deployment succeeds, open the exact HTTPS URL shown in the Render dashboard. Create a fresh account and run the pilot checklist below. No deployed URL exists until that step succeeds.
 
-The app uses a Render PostgreSQL database so data survives service restarts and redeployments. Backups and restores still depend on the selected database plan. Review those settings before storing important records. External database access is disabled in the Blueprint; the web service uses the private connection.
+The app uses a Render PostgreSQL database so data survives web service restarts and redeployments until the free database expires after 30 days. The free database does not provide backups. External database access is disabled in the Blueprint; the web service uses the private connection.
 
 For a custom domain, add its hostname to DJANGO_ALLOWED_HOSTS (comma-separated). If requests originate on another trusted HTTPS domain, configure DJANGO_CSRF_TRUSTED_ORIGINS with complete HTTPS origins. Never use a wildcard for either setting.
 
